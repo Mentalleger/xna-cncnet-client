@@ -1,29 +1,38 @@
-using ClientCore;
-using ClientCore.Enums;
-using ClientCore.I18N;
-using ClientGUI;
-using DTAClient.Domain;
-using DTAClient.Domain.Multiplayer.CnCNet;
-using DTAClient.DXGUI.Multiplayer;
-using DTAClient.DXGUI.Multiplayer.CnCNet;
-using DTAClient.DXGUI.Multiplayer.GameLobby;
-using DTAClient.Online;
-using ClientCore.Extensions;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using Rampastring.Tools;
-using Rampastring.XNAUI;
-using Rampastring.XNAUI.XNAControls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+
+using ClientCore;
+using ClientCore.Enums;
+using ClientCore.Extensions;
+using ClientCore.I18N;
+
+using ClientGUI;
+
 using ClientUpdater;
+
+using DTAClient.Domain;
 using DTAClient.Domain.Multiplayer;
+using DTAClient.Domain.Multiplayer.CnCNet;
+using DTAClient.DXGUI.Bink;
 using DTAClient.DXGUI.Campaign;
+using DTAClient.DXGUI.Multiplayer;
+using DTAClient.DXGUI.Multiplayer.CnCNet;
+using DTAClient.DXGUI.Multiplayer.GameLobby;
+using DTAClient.Online;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+
+using Rampastring.Tools;
+using Rampastring.XNAUI;
+using Rampastring.XNAUI.XNAControls;
+
+using DTAClient.DXGUI.Bink;
 
 namespace DTAClient.DXGUI.Generic
 {
@@ -61,7 +70,8 @@ namespace DTAClient.DXGUI.Generic
             ManualUpdateQueryWindow manualUpdateQueryWindow,
             UpdateWindow updateWindow,
             ExtrasWindow extrasWindow,
-            DirectDrawWrapperManager directDrawWrapperManager
+            DirectDrawWrapperManager directDrawWrapperManager,
+            BinkVideoPlayer binkVideoPlayer
         ) : base(windowManager)
         {
             this.lanLobby = lanLobby;
@@ -86,8 +96,11 @@ namespace DTAClient.DXGUI.Generic
             this.extrasWindow = extrasWindow;
             this.directDrawWrapperManager = directDrawWrapperManager;
 
+
             this.cncnetLobby.UpdateCheck += CncnetLobby_UpdateCheck;
             isMediaPlayerAvailable = IsMediaPlayerAvailable();
+
+            this.binkVideoPlayer = binkVideoPlayer ?? throw new Exception("BinkVideoPlayer was NOT resolved by DI!");
         }
 
         private XNALabel lblCnCNetPlayerCount;
@@ -121,6 +134,7 @@ namespace DTAClient.DXGUI.Generic
         private readonly UpdateWindow updateWindow;
         private readonly ExtrasWindow extrasWindow;
         private readonly DirectDrawWrapperManager directDrawWrapperManager;
+        private readonly BinkVideoPlayer binkVideoPlayer;
 
         private XNAMessageBox firstRunMessageBox;
 
@@ -174,6 +188,18 @@ namespace DTAClient.DXGUI.Generic
             Name = nameof(MainMenu);
             BackgroundTexture = AssetLoader.LoadTexture("MainMenu/mainmenubg.png");
             ClientRectangle = new Rectangle(0, 0, BackgroundTexture.Width, BackgroundTexture.Height);
+
+            string videoPath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "Resources",
+                "Soviet Theme",
+                "MainMenu",
+                "MainMenu.bik"
+            );
+
+            if (!binkVideoPlayer.Play(videoPath)){
+                Console.WriteLine($"MainMenu: Bink video failed to load: {videoPath}");
+            }
 
             WindowManager.CenterControlOnScreen(this);
 
@@ -1038,11 +1064,38 @@ namespace DTAClient.DXGUI.Generic
             base.Update(gameTime);
         }
 
+        //public override void Draw(GameTime gameTime)
+        //{
+        //    lock (locker)
+        //    {
+        //        base.Draw(gameTime);
+        //    }
+        //}
+
         public override void Draw(GameTime gameTime)
         {
             lock (locker)
             {
-                base.Draw(gameTime);
+                binkVideoPlayer.Update(gameTime);
+
+                if (binkVideoPlayer.IsPlaying &&
+                    binkVideoPlayer.CurrentTexture != null)
+                {
+                    DrawTexture(
+                        binkVideoPlayer.CurrentTexture,
+                        new Rectangle(0, 0, Width, Height),
+                        Color.White
+                    );
+                }
+                else
+                {
+                    DrawPanel();
+                }
+
+                DrawChildren(gameTime);
+
+                if (DrawBorders)
+                    DrawPanelBorders();
             }
         }
 
