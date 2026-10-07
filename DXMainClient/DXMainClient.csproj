@@ -27,6 +27,7 @@
     <NoWarn>$(NoWarn);WFAC010;WFO0003</NoWarn>
     <ApplicationManifest Condition="'$(Engine)' == 'UniversalGL' OR '$(Engine)' == 'WindowsGL'">app.SystemAware.manifest</ApplicationManifest>
     <ApplicationManifest Condition="'$(Engine)' != 'UniversalGL' AND '$(Engine)' != 'WindowsGL'">app.PerMonitorV2.manifest</ApplicationManifest>
+    <TargetFrameworks>net48</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Resources\**" />
@@ -42,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Facepunch.Steamworks" GeneratePathProperty="true" />
+    <PackageReference Include="FFmpeg.AutoGen" />
     <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="DiscordRichPresence" />
     <PackageReference Include="lzo.net" />

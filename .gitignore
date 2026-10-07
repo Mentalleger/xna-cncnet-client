@@ -425,3 +425,7 @@ Icon?
 
 # Game specific build prop files
 Directory.Build.Game.*.props
+Directory.Build - Copy.targets
+Directory.Build.targets
+Directory.props
+Directory.Build.targets

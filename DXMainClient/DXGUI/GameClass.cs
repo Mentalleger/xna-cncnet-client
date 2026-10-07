@@ -1,18 +1,25 @@
 using ClientCore;
+
 using ClientGUI;
 using ClientGUI.IME;
+
 using DTAClient.Domain;
 using DTAClient.DXGUI.Generic;
+
 using ClientCore.Extensions;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+
 using Rampastring.Tools;
 using Rampastring.XNAUI;
+
 using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
+
 using DTAClient.Domain.Multiplayer;
 using DTAClient.Domain.Multiplayer.CnCNet;
 using DTAClient.DXGUI.Campaign;
@@ -20,12 +27,20 @@ using DTAClient.DXGUI.Multiplayer;
 using DTAClient.DXGUI.Multiplayer.CnCNet;
 using DTAClient.DXGUI.Multiplayer.GameLobby;
 using DTAClient.Online;
+
 using ClientGUI.Settings;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Rampastring.XNAUI.XNAControls;
+
 using MainMenu = DTAClient.DXGUI.Generic.MainMenu;
+
 using System.Threading.Tasks;
+
+using DTAClient.DXGUI.Bink;
+
 
 #if WINFORMS
 using System.Windows.Forms;
@@ -276,7 +291,8 @@ namespace DTAClient.DXGUI
                             .AddSingleton<PrivateMessageHandler>()
                             .AddSingleton<MapLoader>()
                             .AddSingleton<Random>(GetRandom())
-                            .AddSingleton<DirectDrawWrapperManager>();
+                            .AddSingleton<DirectDrawWrapperManager>()
+                            .AddSingleton<BinkVideoPlayer>();
 
                         // singleton xna controls - same instance on each request
                         services
