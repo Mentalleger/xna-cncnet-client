@@ -1,9 +1,11 @@
 {
   "profiles": {
     "DXMainClient": {
-      "commandName": "Executable",
-      "executablePath": "D:\\XNAClient\\DXMainClient\\bin\\Debug\\clientxna.exe",
-      "workingDirectory": "D:\\XNAClient\\DXMainClient\\bin\\Debug"
+      "commandName": "Project"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
     }
   }
 }
